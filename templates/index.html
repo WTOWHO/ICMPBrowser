@@ -1,0 +1,157 @@
+{{if .Html}}
+{{.Html}}
+{{else}}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICMPBrowser</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+
+        .logo span:nth-child(1) {
+            color: #4285F4;
+        }
+
+        .logo span:nth-child(2) {
+            color: #EA4335;
+        }
+
+        .logo span:nth-child(3) {
+            color: #FBBC05;
+        }
+
+        .logo span:nth-child(4) {
+            color: #4285F4;
+        }
+
+        .logo span:nth-child(5) {
+            color: #34A853;
+        }
+
+        .logo span:nth-child(6) {
+            color: #EA4335;
+        }
+
+        .logo span:nth-child(7) {
+            color: #4285F4;
+        }
+
+        .logo span:nth-child(8) {
+            color: #34A853;
+        }
+
+        .logo span:nth-child(9) {
+            color: #FBBC05;
+        }
+
+        .logo span:nth-child(10) {
+            color: #EA4335;
+        }
+
+        .logo span:nth-child(11) {
+            color: #4285F4;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 580px;
+            text-align: center;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 16px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            outline: none;
+            box-sizing: border-box;
+            transition: box-shadow 0.2s;
+        }
+
+        .search-bar:hover,
+        .search-bar:focus {
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+            border-color: rgba(223, 225, 229, 0);
+        }
+
+        .search-button {
+            margin-top: 25px;
+            padding: 10px 24px;
+            font-size: 14px;
+            background-color: #f8f9fa;
+            border: 1px solid #f8f9fa;
+            border-radius: 4px;
+            color: #3c4043;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #f1f3f4;
+            border: 1px solid #dadce0;
+            color: #202124;
+        }
+
+        .error-message {
+            background-color: red;
+            color: white;
+            width: 1000px;
+            height: 50px;
+            border: #EA4335 5px solid;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="logo">
+        <span>I</span><span>C</span><span>M</span><span>P</span><span>B</span><span>r</span><span>o</span><span>w</span><span>s</span><span>e</span><span>r</span>
+    </div>
+
+    {{if and .Err (ne .ErrMsg "url is empty")}}
+    <div class="error-message">
+        <p>ERROR: {{.ErrMsg}}</p>
+    </div>
+    {{end}}
+
+    {{if .Err}}
+    <div class="error-message">
+        <p>ERROR: {{.ErrMsg}}</p>
+    </div>
+    {{end}}
+
+    <div class="search-container">
+        <form action="" method="GET">
+            <input type="url" name="url" class="search-bar" placeholder="Insira um link http:// ou https://..."
+                pattern="https?://.+" required
+                title="A pesquisa aceita apenas links que iniciam com http:// ou https://">
+            <br>
+            <button type="submit" class="search-button">Pesquisar</button>
+        </form>
+        <p>{{.Url}}</p>
+    </div>
+
+</body>
+
+</html>
+{{end}}
