@@ -18,31 +18,30 @@ jobs:
         with:
           go-version: '1.22'
 
-      # 智能编译步骤：自动寻找 main.go 入口并编译
-      - name: Build
+      - name: Build proxy and browser
         env:
           CGO_ENABLED: 0
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
-          # 自动在整个仓库中寻找 main.go 所在的文件夹
-          MAIN_DIR=$(find . -name "main.go" -not -path "*/vendor/*" | head -n 1 | xargs dirname)
-          if [ -z "$MAIN_DIR" ]; then
-            echo "Error: 找不到 main.go 文件！"
-            exit 1
-          fi
-          echo "找到入口文件，位于: $MAIN_DIR"
-          
-          # 准备输出文件名
-          OUT_NAME="icmpbrowser-${{ matrix.goos }}-${{ matrix.goarch }}"
-          if [ "${{ matrix.goos }}" = "windows" ]; then
-            OUT_NAME="${OUT_NAME}.exe"
-          fi
+          for d in cmd/*; do
+            NAME=$(basename "$d")
+            ENTRY=""
+            if [ -f "$d/main.go" ]; then
+              ENTRY="$d/main.go"
+            elif [ -f "$d/server.go" ]; then
+              ENTRY="$d/server.go"
+            else
+              continue
+            fi
+            OUT="icmpbrowser-${NAME}-${{ matrix.goos }}-${{ matrix.goarch }}"
+            if [ "${{ matrix.goos }}" = "windows" ]; then
+              OUT="${OUT}.exe"
+            fi
+            echo ">>> Building $NAME from $ENTRY"
+            go build -ldflags="-s -w" -o "$OUT" "$ENTRY"
+          done
 
-          # 执行 Go 编译
-          go build -ldflags="-s -w" -o "$OUT_NAME" "$MAIN_DIR"
-
-      # 上传编译好的成果
       - uses: actions/upload-artifact@v4
         with:
           name: icmpbrowser-${{ matrix.goos }}-${{ matrix.goarch }}
