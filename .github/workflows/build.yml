@@ -1,0 +1,29 @@
+name: Build
+on:
+  workflow_dispatch:        # 手动触发
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Build
+        env:
+          CGO_ENABLED: 0          # 静态编译，产物不依赖系统库
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          go build -ldflags="-s -w" -o icmpbrowser-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: icmpbrowser-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: icmpbrowser-*
